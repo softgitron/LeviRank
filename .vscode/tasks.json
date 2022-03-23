@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build docker file",
+      "command": "docker",
+      "args": ["build", "./"],
+      "type": "shell"
+    }
+  ]
+}

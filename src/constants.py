@@ -1,10 +1,9 @@
 DEBUG = True
-TEST_TITLES_FILE_LOCATION = "data/titles/topics-task-1-only-titles.xml"
-DIRTY_CORPUS_FILE_LOCATION = "data/corpus/args_processed.csv"
-CLEAN_CORPUS_FILE_LOCATION = "data/corpus/cleaned_corpus.csv"
-TAGS = ["text", "stance", "acquisitionTime", "discussionTitle", "mode", \
-               "sourceDomain",  "sourceText", "sourceTextConclusionStart", \
-               "sourceTextConclusionEnd",  "sourceTextPremiseStart", \
-                "sourceTextPremiseEnd", "sourceTitle", "sourceUrl", \
-                "annotations", "aspects", "sourceId", "sent_id", "sent_text", \
-                "name", "weight", "normalizedWeight", "rank"]
+THREADS = 8
+TEST_TITLES_FILE_LOCATION = "./data/titles/topics.xml"
+CORPUS_JSONL_FILE_LOCATION = "./data/corpus/touche-task2-passages-version-002.jsonl"
+CORPUS_PICKLE_FILE_LOCATION = "./data/corpus/touche-task2-passages-version-002.dat"
+INDEX_FILE_LOCATION = "./data/index/default_index"
+PRINT_STATUS_UPDATE_SPEED = 1000
+INPUT_FILE_NAME = "topics.xml"
+OUTPUT_FILE_NAME = "run.txt"
