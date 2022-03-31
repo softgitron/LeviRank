@@ -10,7 +10,9 @@ class Corpus:
 
     def __init__(self, corpus_file_path: str = constants.CORPUS_PICKLE_FILE_LOCATION):
         # Read file according to extension.
-        if corpus_file_path.endswith(".jsonl"):
+        if not corpus_file_path:
+            return
+        elif corpus_file_path.endswith(".jsonl"):
             self._read_corpus_jsonl(corpus_file_path)
         else:
             self._read_corpus_pickle(corpus_file_path)

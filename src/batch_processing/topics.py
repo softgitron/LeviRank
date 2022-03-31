@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 
 import constants
-from processing.topic import Topic
+from batch_processing.topic import Topic
 
 
 class Topics:
@@ -19,7 +19,9 @@ class Topics:
             topic = Topic()
             topic.number = int(topic_element.find("number").text)
             topic.title = topic_element.find("title").text
-            topic.objects = topic_element.find("objects").text
+            # Touché 2021 topics do not have objects
+            if topic_element.find("objects"):
+                topic.objects = topic_element.find("objects").text
             topic.description = topic_element.find("description").text
             topic.narrative = topic_element.find("narrative").text
             self.topic_list.append(topic)

@@ -1,10 +1,10 @@
-from corpus import Corpus
+from corpus import CorpusEntry
 
 
 class Hit:
     id: str
     score: float
-    corpus: Corpus
+    corpus_entry: CorpusEntry
 
     def __init__(self, id, score) -> None:
         self.id = id

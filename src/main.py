@@ -1,10 +1,17 @@
 #!/bin/python3
-from corpus import Corpus
+import sys
+import os
+import argparse
+from batch_processing.batch_query_process import BatchQueryProcess
 import constants
+from corpus import Corpus
 from indexing.bm25_indexer import BM25Indexer
 from indexing.index import Index
 from preprocessing.general_preprocessor import GeneralPreprocessor
 from preprocessing.preprocessor import Preprocessor
+from query_expansion.query_expander import QueryExpander
+from query_expansion.wordnet_expander import WordnetExpander
+from results.evaluate_results import EvaluateResults
 
 
 class Main:
@@ -12,11 +19,35 @@ class Main:
     preprocessor: Preprocessor = None
     indexer_type = None
     index: Index = None
+    results_file_path: str = None
 
     def __init__(self) -> None:
-        self.main()
+        if len(sys.argv) > 1:
+            # If there are arguments, proceed to batch processing
+            self.process_with_arguments()
+        else:
+            # If there are no arguments, proceed to main menu
+            self.main_menu()
 
-    def main(self) -> None:
+    def process_with_arguments(self) -> None:
+        parser = argparse.ArgumentParser(description="Process search queries.")
+        parser.add_argument("-i", dest="input_directory", required=True,
+                            help="Input directory of the queries.")
+        parser.add_argument("-o", dest="output_directory", required=True,
+                            help="Output directory, where results will be stored.")
+
+        args = parser.parse_args()
+        input_path = os.path.join(
+            args.input_directory, constants.INPUT_FILE_NAME)
+        output_path = os.path.join(
+            args.output_directory, constants.OUTPUT_FILE_NAME)
+
+        index = Index(BM25Indexer, preprocessor=GeneralPreprocessor(),
+                      query_expander=QueryExpander())
+        process = BatchQueryProcess(index)
+        process.execute(input_path, output_path, constants.METHOD_NAME)
+
+    def main_menu(self) -> None:
         while True:
             print("""
 Main menu:
@@ -24,6 +55,8 @@ Main menu:
 2. Preprocessing options
 3. Indexing options
 4. Query options
+5. Batch process queries
+6. Evaluate batch processing results
 0. Quit the program""")
             option = input("Select the operation: ")
             if option == "1":
@@ -34,6 +67,10 @@ Main menu:
                 self.indexing_options_menu()
             elif option == "4":
                 self.query_options()
+            elif option == "5":
+                self.batch_process()
+            elif option == "6":
+                self.evaluate_results()
             elif option == "0":
                 break
             else:
@@ -109,13 +146,21 @@ Corpus options:
             print("""
 Preprocessing options:
 1. Set preprocessor to general preprocessor
-2. Preprocess corpus
+2. Set preprocessor to general parallel preprocessor
+3. Preprocess corpus
 0. Go back""")
+            # Update index preprocessor, if index is defined
+            if self.index:
+                self.index.preprocessor = self.preprocessor
             option = input("Select the operation: ")
             if option == "1":
                 self.preprocessor = GeneralPreprocessor(verbose=True)
                 print("Preprocessor set to generic preprocessor.")
-            elif option == "2":
+            if option == "2":
+                self.preprocessor = GeneralPreprocessor(
+                    verbose=True, parallel=True)
+                print("Preprocessor set to generic parallel preprocessor.")
+            elif option == "3":
                 if not self.preprocessor:
                     print(
                         "Can't start preprocessing, because preprocessor is not selected.")
@@ -154,7 +199,7 @@ Indexing options:
                 if not index_file_path:
                     index_file_path = constants.INDEX_FILE_LOCATION
                 self.index = Index(
-                    self.indexer_type, self.corpus, index_file_path)
+                    self.indexer_type, self.corpus, preprocessor=self.preprocessor, index_file_path=index_file_path)
                 self.index.update()
                 print("Indexing has been completed.")
             elif option == "3":
@@ -167,7 +212,7 @@ Indexing options:
                 if not index_file_path:
                     index_file_path = constants.INDEX_FILE_LOCATION
                 self.index = Index(
-                    self.indexer_type, self.corpus, index_file_path)
+                    self.indexer_type, self.corpus, preprocessor=self.preprocessor, index_file_path=index_file_path)
             elif option == "0":
                 break
             else:
@@ -192,27 +237,29 @@ Corpus options:
         while True:
             print("""
 Corpus options:
-1. Query using text
-2. Query using id
+1. Set query expander type
+2. Query using text
+3. Query using id
 0. Go back""")
             option = input("Select the operation: ")
             if option == "1":
+                self.query_expander_type_menu()
+            elif option == "2":
                 if not self.corpus:
                     print("Corpus must be loaded, before query can be issued")
                     continue
                 elif not self.index:
                     print("Index must be loaded, before query can be made")
                     continue
-                if self.preprocessor:
-                    query_input = input("Enter text query: ")
-                    query_input = self.preprocessor.process(query_input)
-                    self.index.query(query_input, verbose=True)
-                else:
+                if not self.index.preprocessor:
                     print(
                         "Note, it is recommended that preprocessor is set before textual queries")
-                    query_input = input("Enter text query: ")
-                    self.index.query(query_input, verbose=True)
-            elif option == "2":
+                if not self.index.query_expander:
+                    print(
+                        "Note, it is recommended that query expander is set before textual queries")
+                query_input = input("Enter text query: ")
+                self.index.query(query_input, verbose=True)
+            elif option == "3":
                 if not self.corpus:
                     print("Corpus must be loaded, before query can be issued")
                     continue
@@ -222,6 +269,61 @@ Corpus options:
                 break
             else:
                 print("Unknown option")
+
+    def query_expander_type_menu(self):
+        if not self.index:
+            print("Index must be loaded, before query expander can be set")
+            return
+        while True:
+            print("""
+Corpus options:
+1. Set query expander type to Wordnet
+0. Go back""")
+            option = input("Select the operation: ")
+            if option == "1":
+                self.index.query_expander = WordnetExpander()
+                print("Query expander type set to Wordnet")
+            elif option == "0":
+                break
+            else:
+                print("Unknown option")
+
+    def batch_process(self):
+        if not self.index:
+            print("Index must be loaded before batch processing")
+            return
+        if not self.index.preprocessor:
+            print("Preprocessor is recommended to be defined before batch processing")
+        if not self.index.query_expander:
+            print("Query expander is recommended to be defined before batch processing")
+        input_file_path = input("Please provide path for the topics file: ")
+        self.results_file_path = input(
+            "Please provide path for the results file: ")
+        method = input("Please provide some name for the used method: ")
+
+        process = BatchQueryProcess(self.index)
+        process.execute(input_file_path, self.results_file_path, method)
+
+    def evaluate_results(self):
+        if not self.corpus:
+            print(
+                "Corpus must be loaded before evaluation in order to remove unfair entries")
+            return
+        if not self.results_file_path:
+            self.results_file_path = input(
+                "Results file path is not known, please provide the path: ")
+        evaluation_file_path = input(
+            "Please provide the path for the evaluation file: ")
+
+        evaluate_results = EvaluateResults()
+        evaluate_results.evaluate(
+            self.results_file_path, evaluation_file_path, self.corpus)
+
+        save_results = input("Would you like to save results (y/n): ").lower()
+        if save_results == "y":
+            evaluation_results_file = input(
+                "Please input path for the evaluation results: ")
+            evaluate_results.save_results_to_file(evaluation_results_file)
 
 
 Main()
