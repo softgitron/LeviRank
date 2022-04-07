@@ -1,192 +1,192 @@
-,Number,Title
-0,1,"
+Number,Title
+1,"
 What is the difference between sex and love?
 "
-1,2,"
+2,"
 Which is better, a laptop or a desktop?
 "
-2,3,"
+3,"
 Which is better, Canon or Nikon?
 "
-3,4,"
+4,"
 What are the best dish detergents?
 "
-4,5,"
+5,"
 What are the best cities to live in?
 "
-5,6,"
+6,"
 What is the longest river in the U.S.?
 "
-6,7,"
+7,"
 Which is healthiest: coffee, green tea or black tea and why?
 "
-7,8,"
+8,"
 What are the advantages and disadvantages of PHP over Python and vice versa?
 "
-8,9,"
+9,"
 Why is Linux better than Windows?
 "
-9,10,"
+10,"
 How to sleep better?
 "
-10,11,"
+11,"
 Should I buy an LCD TV or a plasma TV?
 "
-11,12,"
+12,"
 Train or plane? Which is the better choice?
 "
-12,13,"
+13,"
 What is the highest mountain on Earth?
 "
-13,14,"
+14,"
 Should one prefer Chinese medicine or Western medicine?
 "
-14,15,"
+15,"
 What are the best washing machine brands?
 "
-15,16,"
+16,"
 Should I buy or rent?
 "
-16,17,"
+17,"
 Do you prefer cats or dogs, and why?
 "
-17,18,"
+18,"
 What is the better way to grill outdoors: gas or charcoal?"
-18,19,"
+19,"
 Which is better, MAC or PC?"
-19,20,"
+20,"
 What is better: to use a brush or a sponge?"
-20,21,"
+21,"
 Which is better, Linux or Microsoft? "
-21,22,"
+22,"
 Which is better, Pepsi or Coke? "
-22,23,"
+23,"
 What is better, Google search or Yahoo search? "
-23,24,"
+24,"
 Which one is better, Netflix or Blockbuster?
 "
-24,25,"
+25,"
 Which browser is better, Internet Explorer or Firefox?
 "
-25,26,"
+26,"
 Which is a better vehicle: BMW or Audi?"
-26,27,"
+27,"
 Which one is better, an electric stove or a gas stove?
 "
-27,28,"
+28,"
 What planes are best, Boeing or Airbus? "
-28,29,"
+29,"
 Which is better, Disneyland or Disney World? "
-29,30,"
+30,"
 Should I buy an Xbox or a PlayStation?
 "
-30,31,"
+31,"
 Which has more caffeine, coffee or tea?
 "
-31,32,"
+32,"
 Which is better, LED or LCD Reception Displays?
 "
-32,33,"
+33,"
 What is better: ASP or PHP?
 "
-33,34,"
+34,"
 What is better for the environment, a real or a fake Christmas tree?
 "
-34,35,"
+35,"
 Do you prefer tampons or pads?
 "
-35,36,"
+36,"
 What IDE is better for Java: NetBeans or Eclipse?
 "
-36,37,"
+37,"
 Is OpenGL better than Direct3D in terms of portability to different platforms?
 "
-37,38,"
+38,"
 What are the differences between MySQL and PostgreSQL in performance?
 "
-38,39,"
+39,"
 Is Java code more readable than code written in Scala?
 "
-39,40,"
+40,"
 Which operating system has better performance: Windows 7 or Windows 8?
 "
-40,41,"
+41,"
 Which smartphone has a better battery life: Xperia or iPhone?
 "
-41,42,"
+42,"
 Which four wheel truck is better: Ford or Toyota?
 "
-42,43,"
+43,"
 Should I prefer a Leica camera over Nikon for portrait photographs?
 "
-43,44,"
+44,"
 Which company has a larger capitalization: Apple or Microsoft?
 "
-44,45,"
+45,"
 Which laptop has a better durability: HP or Dell?
 "
-45,46,"
+46,"
 Which beverage has more calories per glass: beer or cider?
 "
-46,47,"
+47,"
 Is admission rate in Stanford higher than that of MIT?
 "
-47,48,"
+48,"
 Is pasta healthier than pizza?
 "
-48,49,"
+49,"
 Which city is more expensive to live in: San Francisco or New York?
 "
-49,50,"
+50,"
 Whose salary is higher: basketball or soccer players?
 "
-50,51,"What is better at reducing fever in children, Ibuprofen or Aspirin?"
-51,52,What are the best rice cookers?
-52,53,Should I buy steel or ceramic knives?
-53,54,Is morning or afternoon sun the best for fruit trees?
-54,55,"What is better for back pain, chiropractic therapy or physical therapy?"
-55,56,Is Kenya or Tanzania better for a safari?
-56,57,How is a Master's degree different from a Bachelor's degree?
-57,58,"Which is better, Family Guy or The Simpsons?"
-58,59,"Which is more difficult, skiing or snowboarding?"
-59,60,Why is basketball better than football?
-60,61,"Who is stronger, Hulk or Superman?"
-61,62,"Plastic pots or ceramic pots, which is better in terms of plant health?"
-62,63,"What is the coldest temperature ever recorded on Earth, and where?"
-63,64,What is the most popular beer in Australia?
-64,65,Are dogs better than humans?
-65,66,What diet gives the best result to lose weight?
-66,67,Should I take the IELTS or the TOEFL?
-67,68,Are online courses better than physical classrooms?
-68,69,"Who was a better boxer, Muhammad Ali or Joe Frazier?"
-69,70,Which technology performs better: Apple's or Google's?
-70,71,Is gold equal to platinum?
-71,72,"Who is better at learning a foreign language, kids or adults?"
-72,73,"What's the difference between coffee, espresso, cappuccino, and latte?"
-73,74,"Which city is better, London or Paris?"
-74,75,"What is better, a conditioner or a moisturizer?"
-75,76,Are artificial sweeteners better than white sugar?
-76,77,Is it healthier to bake than to fry food?
-77,78,"Which algorithm is better, quicksort or merge sort?"
-78,79,"What is more interesting, computer science or computer engineering?"
-79,80,What is the difference between a vegan and a vegetarian?
-80,81,Does unpasteurized cheese taste better than pasteurized cheese?
-81,82,"Which light bulb is better, incandescent or fluorescent?"
-82,83,What is the difference between quantum physics and quantum mechanics?
-83,84,"What is better, cow milk or goat milk?"
-84,85,Psoriasis vs Eczema: What is the difference?
-85,86,"I am planning to buy sneakers: Which are better, Adidas or Nike?"
-86,87,Is Obamacare really any better than Medicare?
-87,88,Should I major in philosophy or psychology?
-88,89,What are the differences between biodegradable and non-biodegradable wastes?
-89,90,What are good business books to read?
-90,91,When are random forest classifiers better than decision trees?
-91,92,What are the pros and cons of wood vs. stone mulch?
-92,93,Is rain water better than tap water for plants?
-93,94,Suitcases: hard or soft?
-94,95,"Which is more environmentally friendly, a hybrid or a diesel?"
-95,96,"Which is healthier to wear, boxers or briefs?"
-96,97,What is the difference between a blender vs a food processor?
-97,98,"Which is better, rock or rap?"
-98,99,Do you think imagination is better than knowledge?
-99,100,Should I learn Python or R for data analysis?
+51,"What is better at reducing fever in children, Ibuprofen or Aspirin?"
+52,What are the best rice cookers?
+53,Should I buy steel or ceramic knives?
+54,Is morning or afternoon sun the best for fruit trees?
+55,"What is better for back pain, chiropractic therapy or physical therapy?"
+56,Is Kenya or Tanzania better for a safari?
+57,How is a Master's degree different from a Bachelor's degree?
+58,"Which is better, Family Guy or The Simpsons?"
+59,"Which is more difficult, skiing or snowboarding?"
+60,Why is basketball better than football?
+61,"Who is stronger, Hulk or Superman?"
+62,"Plastic pots or ceramic pots, which is better in terms of plant health?"
+63,"What is the coldest temperature ever recorded on Earth, and where?"
+64,What is the most popular beer in Australia?
+65,Are dogs better than humans?
+66,What diet gives the best result to lose weight?
+67,Should I take the IELTS or the TOEFL?
+68,Are online courses better than physical classrooms?
+69,"Who was a better boxer, Muhammad Ali or Joe Frazier?"
+70,Which technology performs better: Apple's or Google's?
+71,Is gold equal to platinum?
+72,"Who is better at learning a foreign language, kids or adults?"
+73,"What's the difference between coffee, espresso, cappuccino, and latte?"
+74,"Which city is better, London or Paris?"
+75,"What is better, a conditioner or a moisturizer?"
+76,Are artificial sweeteners better than white sugar?
+77,Is it healthier to bake than to fry food?
+78,"Which algorithm is better, quicksort or merge sort?"
+79,"What is more interesting, computer science or computer engineering?"
+80,What is the difference between a vegan and a vegetarian?
+81,Does unpasteurized cheese taste better than pasteurized cheese?
+82,"Which light bulb is better, incandescent or fluorescent?"
+83,What is the difference between quantum physics and quantum mechanics?
+84,"What is better, cow milk or goat milk?"
+85,Psoriasis vs Eczema: What is the difference?
+86,"I am planning to buy sneakers: Which are better, Adidas or Nike?"
+87,Is Obamacare really any better than Medicare?
+88,Should I major in philosophy or psychology?
+89,What are the differences between biodegradable and non-biodegradable wastes?
+90,What are good business books to read?
+91,When are random forest classifiers better than decision trees?
+92,What are the pros and cons of wood vs. stone mulch?
+93,Is rain water better than tap water for plants?
+94,Suitcases: hard or soft?
+95,"Which is more environmentally friendly, a hybrid or a diesel?"
+96,"Which is healthier to wear, boxers or briefs?"
+97,What is the difference between a blender vs a food processor?
+98,"Which is better, rock or rap?"
+99,Do you think imagination is better than knowledge?
+100,Should I learn Python or R for data analysis?
