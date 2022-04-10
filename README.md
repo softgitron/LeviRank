@@ -7,5 +7,6 @@ Intial retrieval.ipynb: bm25 intial retreival (it has to be run first to create 
 
 Reranker.ipynb: Reranking using Mono T5
 
+Google drive working Folder: https://drive.google.com/drive/folders/1OY85d9xLQhWl2HirGKyG1ehN3I-NYadv?usp=sharing
 
 (Note: I did the initial retrieval after preprocessing the documents. It can be done even without preprocessing)
