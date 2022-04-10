@@ -7,6 +7,7 @@ from indexing.hit import Hit
 from indexing.indexer import Indexer
 from preprocessing.preprocessor import Preprocessor
 from query_expansion.query_expander import QueryExpander
+from reranking.reranker import Reranker
 
 
 class Index:
@@ -14,9 +15,12 @@ class Index:
     indexer: Indexer
     preprocessor: Preprocessor
     query_expander: QueryExpander
+    reranker: Reranker
     index_file_path: str
 
-    def __init__(self, indexer, corpus: Union[Corpus, None] = None, preprocessor: Preprocessor = None, query_expander: QueryExpander = None, index_file_path: str = constants.INDEX_FILE_LOCATION):
+    def __init__(self, indexer, corpus: Union[Corpus, None] = None, preprocessor: Preprocessor = None,
+                 query_expander: QueryExpander = None, reranker: Reranker = None,
+                 index_file_path: str = constants.INDEX_FILE_LOCATION):
         # Initialize python terrier
         if not pt.started():
             pt.init()
@@ -25,6 +29,7 @@ class Index:
         self.index_file_path = index_file_path
         self.preprocessor = preprocessor
         self.query_expander = query_expander
+        self.reranker = reranker
         self.indexer = indexer(self.corpus, self.index_file_path)
 
     def update(self):
@@ -51,6 +56,10 @@ class Index:
 
         for result in results:
             result.corpus_entry = self.corpus.entries_by_id.get(result.id)
+
+        # If reranker is available, rerank the results
+        if self.reranker:
+            results = self.reranker.rerank(query, results)
 
         if verbose:
             for i in range(10):

@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[[source]]
+url = "https://download.pytorch.org/whl/cu101/torch_stable.html"
+verify_ssl = true
+name = "torch_releases"
+
+[packages]
+torch = "*"
+pygaggle = {git = "https://github.com/castorini/pygaggle"}
+faiss-cpu = "*"
+
+[requires]
+python_version = "3.9"
+
+[pipenv]
+allow_prereleases = false

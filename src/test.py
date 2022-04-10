@@ -8,13 +8,14 @@ from indexing.bm25_indexer import BM25Indexer
 from preprocessing.general_preprocessor import GeneralPreprocessor
 from batch_processing.batch_query_process import BatchQueryProcess
 from query_expansion.wordnet_expander import WordnetExpander
-#from reranking.distilbert_reranker import DistilbertReranker
+from reranking.distilbert_reranker import DistilbertReranker
 from reranking.mono_t5_reranker import MonoT5Reranker
+from reranking.multi_reranker import MultiReranker
 from results.evaluate_results import EvaluateResults
 from results.evaluations import Evaluations
 from results.results import Results
 
-TEST = 11
+TEST = 13
 
 if (TEST == 0):
     # Indexing test
@@ -95,11 +96,30 @@ elif(TEST == 11):
         query, verbose=True)
     reranker = MonoT5Reranker()
     reranked_hit_list = reranker.rerank(preprocessor.process(query), hit_list)
-# elif(TEST == 12):
+elif(TEST == 12):
     # Test distilbert reranker
-    #corpus = Corpus(corpus_file_path="./data/pp_22_old.dat")
-    #index = Index(BM25Indexer, corpus, index_file_path="./data/index")
-    # hit_list = index.query(
-    #    "What is better at reducing fever in children, Ibuprofen or Aspirin?", verbose=True)
-    #reranker = DistilbertReranker()
-    #reranked_hit_list = reranker.rerank(hit_list)
+    corpus = Corpus(corpus_file_path="./data/pp_22_old.dat")
+    preprocessor = GeneralPreprocessor()
+    index = Index(BM25Indexer, corpus, preprocessor=preprocessor,
+                  index_file_path="./data/index")
+    query = "What is better at reducing fever in children, Ibuprofen or Aspirin?"
+    hit_list = index.query(query, verbose=True)
+    reranker = DistilbertReranker()
+    reranked_hit_list = reranker.rerank(preprocessor.process(query), hit_list)
+elif(TEST == 13):
+    # Test whole pipeline with reranking support
+    corpus = Corpus(corpus_file_path="./data/pp_22_old.dat")
+    preprocessor = GeneralPreprocessor()
+    mono_t5_reranker = MonoT5Reranker()
+    distilbert_reranker = DistilbertReranker()
+    multi_reranker = MultiReranker([mono_t5_reranker, distilbert_reranker])
+    index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),
+                  reranker=multi_reranker)
+    process = BatchQueryProcess(index)
+    process.execute("./data/topics_21.xml",
+                    "./data/results_with_rerank_21.txt", "Reranking_test")
+    evaluate_results = EvaluateResults()
+    evaluate_results.evaluate(
+        "./data/results_with_rerank_21.txt", "./relevance_judgments_21.qrels", corpus)
+    evaluate_results.save_results_to_file(
+        "evaluation_results_21_with_reranking.txt")
