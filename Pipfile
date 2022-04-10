@@ -5,9 +5,10 @@ name = "pypi"
 
 [packages]
 python-terrier = "*"
-nltk = "*"
 pytrec-eval-terrier = "==0.5.2"
 language-tool-python = "*"
+sentence-transformers = "*"
+nptyping = "==1.4.4"
 
 [dev-packages]
 autopep8 = "*"

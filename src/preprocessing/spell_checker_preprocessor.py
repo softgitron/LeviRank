@@ -19,5 +19,10 @@ class SpellCheckerPreprocessor:
         return self.spell_checker._url[:-3]
 
     def score_corpus_entry(self, corpus_entry: CorpusEntry):
-        spelling_errors = self.spell_checker.check(corpus_entry.contents)
-        corpus_entry.spelling_errors_count = len(spelling_errors)
+        try:
+            spelling_errors = self.spell_checker.check(corpus_entry.contents)
+            corpus_entry.spelling_errors_count = len(spelling_errors)
+        except Exception as error:
+            print("Error occurred while trying to evaluate corpus entry.")
+            print("Spelling errors count will not be saved for the entry.")
+            print(error)

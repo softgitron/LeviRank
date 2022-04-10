@@ -1,4 +1,5 @@
 
+import math
 from corpus import Corpus
 from results.results import Results
 from results.evaluations import Evaluations
@@ -15,6 +16,7 @@ class EvaluateResults:
     average_final_score: float
     average_relevance_score: float
     average_coverage_score: float
+    average_ndcg_score: float
 
     def evaluate(self, results_file_path: str, evaluations_path: str, corpus: Corpus):
         # Load results
@@ -42,7 +44,7 @@ class EvaluateResults:
         # Print results
         print(self)
 
-    def calculate_scores(self, results):
+    def calculate_scores(self, results: Results):
         # Evaluate correctness of the results using premade evaluations
         results_grouped_by_id = results.group_by_topic_number()
         for query_id in results_grouped_by_id.keys():
@@ -52,15 +54,20 @@ class EvaluateResults:
             coverage_score = self.calculate_coverage_score(
                 query_id, scored_with_maximum_grade_amount)
 
+            # Calculate nDCG score
+            idcg_score = self.calculate_idcg(query_id)
+            ndcg_score = self.calculate_ndcg(
+                query_id, results_grouped_by_id, idcg_score)
+
             # Calculate final score by weighting relevance and coverage scores
-            final_score = relevance_score * 0.80 + coverage_score * 0.20
+            final_score = relevance_score * 0.30 + coverage_score * 0.15 + ndcg_score * 0.55
 
             # Save score to list of scores
             score = Score(query_id, final_score,
-                          relevance_score, coverage_score)
+                          relevance_score, coverage_score, ndcg_score)
             self.scores.append(score)
 
-    def calculate_relevance_score(self, query_id, results_grouped_by_id) -> tuple[float, int]:
+    def calculate_relevance_score(self, query_id: int, results_grouped_by_id: dict[list[Results]]) -> tuple[float, int]:
         # Calculate scores based on the evaluations.
         # This step makes 80 percent of the score.
         # Full score is given, if the entry is evaluated with score self.MAXIMUM_SCORE
@@ -104,7 +111,7 @@ class EvaluateResults:
         scored_with_maximum_grade_amount = len(scored_with_maximum_grade)
         return (relevance_score, scored_with_maximum_grade_amount)
 
-    def calculate_coverage_score(self, query_id, scored_with_maximum_grade_amount) -> float:
+    def calculate_coverage_score(self, query_id: int, scored_with_maximum_grade_amount: dict[str]) -> float:
         # Calculate coverage score.
         # Score is 20% of the total score.
         # Coverage score signifies amount of best scores that
@@ -126,33 +133,82 @@ class EvaluateResults:
 
         return coverage_score
 
+    def calculate_idcg(self, query_id: int) -> float:
+        # Order evaluations
+        ordered_evaluations = sorted(self.evaluations.get_query_evaluations(
+            query_id), reverse=True)
+
+        # Calculate IDCG value
+        idcg_score = 0
+        for index, ordered_evaluation in enumerate(ordered_evaluations):
+            idcg_score += ordered_evaluation / math.log2(index + 2)
+
+        return idcg_score
+
+    def calculate_ndcg(self, query_id: int, results_grouped_by_id: dict[list[Results]], idcg_score: float):
+        # Dictionary of allready evaluated ids.
+        # Evaluate every id only once.
+        allready_evaluated = {}
+
+        # Calculate DCG value
+        dcg_score = 0
+        for index, result in enumerate(results_grouped_by_id.get(query_id)):
+            # Skip if allready evaluated id
+            if result.document_id in allready_evaluated:
+                continue
+            else:
+                allready_evaluated[result.document_id] = True
+
+            # Get relevance score
+            relevance = self.evaluations.entries[query_id].get(
+                result.document_id)
+
+            # Do not consider entries that are not evaluated
+            if not relevance:
+                continue
+
+            # Calculate new DCG score
+            dcg_score += relevance / math.log2(index + 2)
+
+        # Calculate nDCG score
+        ndcg_score = dcg_score / idcg_score
+
+        return ndcg_score
+
     def calculate_scores_average(self):
         final_score_sum = 0
         relevance_score_sum = 0
         coverage_score_sum = 0
+        ndcg_score_sum = 0
         for score in self.scores:
             final_score_sum += score.score
             relevance_score_sum += score.relevance_score
             coverage_score_sum += score.coverage_score
+            ndcg_score_sum += score.ndcg_score
 
-        self.average_final_score = final_score_sum / len(self.scores)
-        self.average_relevance_score = relevance_score_sum / len(self.scores)
-        self.average_coverage_score = coverage_score_sum / len(self.scores)
+        scores_amount = len(self.scores)
+
+        self.average_final_score = final_score_sum / scores_amount
+        self.average_relevance_score = relevance_score_sum / scores_amount
+        self.average_coverage_score = coverage_score_sum / scores_amount
+        self.average_ndcg_score = ndcg_score_sum / scores_amount
 
     def __repr__(self) -> str:
         output = ""
-        output += "Query id | Score | Relevance score | Coverage score\n"
+        output += "Query id | Score | Relevance score | Coverage score | nDCG\n"
         for score in self.scores:
             final_score = round(score.score, 2)
             relevance_score = round(score.relevance_score, 2)
             coverage_score = round(score.coverage_score, 2)
-            output += f"{score.query_id} {final_score} {relevance_score} {coverage_score}\n"
+            ndcg_score = round(score.ndcg_score, 2)
+            output += f"{score.query_id} {final_score} {relevance_score} {coverage_score} {ndcg_score}\n"
 
         # Rounded averages
         average_final_score = round(self.average_final_score, 2)
         average_relevance_score = round(self.average_relevance_score, 2)
         average_coverage_score = round(self.average_coverage_score, 2)
-        output += f"Average {average_final_score} {average_relevance_score} {average_coverage_score}"
+        average_ndcg_score = round(self.average_ndcg_score, 2)
+        output += f"Average {average_final_score} {average_relevance_score} {average_coverage_score} {average_ndcg_score}"
 
         return output
 

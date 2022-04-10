@@ -70,3 +70,8 @@ class Evaluations:
         print("Extra evaluations have now been deleted")
 
         return percentage_float
+
+    def get_query_evaluations(self, query_id: int) -> list[int]:
+        query_dictionary = self.entries.get(query_id)
+        query_evaluation_values = list(query_dictionary.values())
+        return query_evaluation_values

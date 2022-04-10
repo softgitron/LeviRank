@@ -1,4 +1,5 @@
 #!/bin/python3
+import os
 import constants
 from corpus import Corpus
 from corpus_entry import CorpusEntry
@@ -7,11 +8,13 @@ from indexing.bm25_indexer import BM25Indexer
 from preprocessing.general_preprocessor import GeneralPreprocessor
 from batch_processing.batch_query_process import BatchQueryProcess
 from query_expansion.wordnet_expander import WordnetExpander
+#from reranking.distilbert_reranker import DistilbertReranker
+from reranking.mono_t5_reranker import MonoT5Reranker
 from results.evaluate_results import EvaluateResults
 from results.evaluations import Evaluations
 from results.results import Results
 
-TEST = 10
+TEST = 11
 
 if (TEST == 0):
     # Indexing test
@@ -48,18 +51,18 @@ elif(TEST == 5):
     print(results.entries[0])
 elif(TEST == 6):
     # Test calculating corpus coverage based on the relevance judgments
-    corpus = Corpus(corpus_file_path="./data/pp_22.dat")
+    corpus = Corpus(corpus_file_path="./data/pp_22_old.dat")
     evaluations = Evaluations("./data/relevance_judgments_21.qrels")
     evaluations.compare_similarity_with_corpus(corpus)
 elif(TEST == 7):
     # Test evaluate results class
-    corpus = Corpus(corpus_file_path="./data/pp_22.dat")
+    corpus = Corpus(corpus_file_path="./data/pp_22_old.dat")
     evaluate_results = EvaluateResults()
     evaluate_results.evaluate("./data/results_21.txt",
                               "./data/relevance_judgments_21.qrels", corpus)
     evaluate_results.save_results_to_file("./data/evaluation_results_21.txt")
 elif(TEST == 8):
-    # Test parallel processing pipeline
+    # Test parallel preprocessing pipeline
     corpus = Corpus(corpus_file_path=constants.CORPUS_JSONL_FILE_LOCATION)
     # Execute generall preprocessing parallel
     general_preprocessing = GeneralPreprocessor(verbose=True, parallel=True)
@@ -80,3 +83,23 @@ elif(TEST == 10):
     index = Index(BM25Indexer, corpus, preprocessor=GeneralPreprocessor(
     ), query_expander=WordnetExpander(), index_file_path="./data/index")
     index.query("Should I buy steel or ceramic knives?", verbose=True)
+elif(TEST == 11):
+    print(os.getcwd())
+    # Test T5 reranker
+    corpus = Corpus(corpus_file_path="./data/pp_22_old.dat")
+    preprocessor = GeneralPreprocessor()
+    index = Index(BM25Indexer, corpus, preprocessor=preprocessor,
+                  index_file_path="./data/index")
+    query = "What is better at reducing fever in children, Ibuprofen or Aspirin?"
+    hit_list = index.query(
+        query, verbose=True)
+    reranker = MonoT5Reranker()
+    reranked_hit_list = reranker.rerank(preprocessor.process(query), hit_list)
+# elif(TEST == 12):
+    # Test distilbert reranker
+    #corpus = Corpus(corpus_file_path="./data/pp_22_old.dat")
+    #index = Index(BM25Indexer, corpus, index_file_path="./data/index")
+    # hit_list = index.query(
+    #    "What is better at reducing fever in children, Ibuprofen or Aspirin?", verbose=True)
+    #reranker = DistilbertReranker()
+    #reranked_hit_list = reranker.rerank(hit_list)
