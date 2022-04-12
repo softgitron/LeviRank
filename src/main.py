@@ -9,6 +9,9 @@ from indexing.bm25_indexer import BM25Indexer
 from indexing.index import Index
 from preprocessing.general_preprocessor import GeneralPreprocessor
 from preprocessing.preprocessor import Preprocessor
+from reranking.distilbert_reranker import DistilbertReranker
+from reranking.mono_t5_reranker import MonoT5Reranker
+from reranking.multi_reranker import MultiReranker
 from query_expansion.query_expander import QueryExpander
 from query_expansion.wordnet_expander import WordnetExpander
 from results.evaluate_results import EvaluateResults
@@ -22,6 +25,9 @@ class Main:
     results_file_path: str = None
 
     def __init__(self) -> None:
+        # Set standard environment flags
+        os.environ["TOKENIZERS_PARALLELISM"] = "true"
+
         if len(sys.argv) > 1:
             # If there are arguments, proceed to batch processing
             self.process_with_arguments()
@@ -42,8 +48,12 @@ class Main:
         output_path = os.path.join(
             args.output_directory, constants.OUTPUT_FILE_NAME)
 
-        index = Index(BM25Indexer, preprocessor=GeneralPreprocessor(),
-                      query_expander=QueryExpander())
+        corpus = Corpus()
+        mono_t5_reranker = MonoT5Reranker()
+        distilbert_reranker = DistilbertReranker()
+        multi_reranker = MultiReranker([mono_t5_reranker, distilbert_reranker])
+        index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),
+                      reranker=multi_reranker)
         process = BatchQueryProcess(index)
         process.execute(input_path, output_path, constants.METHOD_NAME)
 

@@ -11,7 +11,7 @@ name = "torch_releases"
 [packages]
 torch = "*"
 pygaggle = {git = "https://github.com/castorini/pygaggle"}
-faiss-cpu = "*"
+faiss-gpu = "*"
 
 [requires]
 python_version = "3.9"

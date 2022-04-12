@@ -4,6 +4,6 @@ INPUT_FILE_NAME = "topics.xml"
 OUTPUT_FILE_NAME = "run.txt"
 TEST_TITLES_FILE_LOCATION = "./data/topics.xml"
 CORPUS_JSONL_FILE_LOCATION = "./data/touche-task2-passages-version-002.jsonl"
-CORPUS_PICKLE_FILE_LOCATION = "./data/touche-task2-passages-version-002.dat"
+CORPUS_PICKLE_FILE_LOCATION = "./data/corpus.dat"
 INDEX_FILE_LOCATION = "./data/index"
 PRINT_STATUS_UPDATE_SPEED = 100

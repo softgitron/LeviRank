@@ -1,33 +1,35 @@
-FROM python:3.9-alpine
+FROM nvidia/cuda:11.6.0-runtime-ubuntu20.04
 
 # Create app directory
 WORKDIR /app
 
 # Install other required system level applications
-RUN apk --no-cache add openjdk11 musl-dev linux-headers g++ pcre-dev \
-gcc gfortran build-base wget freetype-dev libpng-dev openblas-dev && \
-pip install pipenv
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install openjdk-17-jdk g++ libpcre3-dev \
+gcc gfortran build-essential wget curl libfreetype-dev libpng-dev libopenblas-dev libgomp1 git \
+python3.9 python3.9-distutils python3.9-dev && ln /bin/python3.9 /bin/python && \
+wget https://bootstrap.pypa.io/get-pip.py && python get-pip.py && pip install pipenv
 
 # Install required python packages
 COPY ./Pipfile* ./
 RUN pipenv install --system --deploy --ignore-pipfile --verbose
 
-# Set necessary java environment variables
-ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk
-ENV JDK_HOME /usr/lib/jvm/java-11-openjdk
-ENV LD_LIBRARY_PATH /usr/lib/jvm/java-11-openjdk/lib/server/:/usr/lib/:/lib/
-
 # Install special environments
+COPY ./src/special_environments/t5_reranker/ /app/src/special_environments/t5_reranker/
 RUN cd ./src/special_environments/t5_reranker && pipenv install -v
 
 # Prepare libraries
-COPY ./src/prepare_libraries.py ./src/prepare_libraries.py
-COPY ./src/special_environments/t5_reranker/prepare_libraries.py ./src/special_environments/t5_reranke/prepare_libraries.py
-RUN python ./src/prepare_libraries.py
-RUN cd ./src/special_environments/t5_reranker && pipenv run python ./prepare_libraries.py
+COPY ./src/prepare_libraries.py /app/src/prepare_libraries.py
+RUN python /app/src/prepare_libraries.py
+WORKDIR /app/src/special_environments/t5_reranker
+RUN pipenv run python ./prepare_libraries.py
+WORKDIR /app
 
 # Copy sources and premade index
-COPY ./src/ ./
-COPY ./data/index ./data/index
+COPY ./src/ /app/src/
+COPY ./data/ /app/data/
 
-CMD ["python", "./src/main.py"]
+# Make directories for input and output files
+RUN mkdir /app/data/in && mkdir /app/data/out
+
+ENTRYPOINT ["python", "/app/src/main.py"]
+CMD ["python", "/app/src/main.py"]
