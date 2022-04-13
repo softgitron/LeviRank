@@ -1,13 +1,14 @@
 #!/bin/python3
 import os
 import constants
-from corpus import Corpus
-from corpus_entry import CorpusEntry
+from corpus.corpus import Corpus
+from corpus.corpus_entry import CorpusEntry
 from indexing.index import Index
 from indexing.bm25_indexer import BM25Indexer
 from preprocessing.general_preprocessor import GeneralPreprocessor
 from batch_processing.batch_query_process import BatchQueryProcess
 from query_expansion.wordnet_expander import WordnetExpander
+from query_expansion.advanced_wordnet_expander import AdvancedWordnetExpander
 from reranking.distilbert_reranker import DistilbertReranker
 from reranking.mono_t5_reranker import MonoT5Reranker
 from reranking.multi_reranker import MultiReranker
@@ -15,7 +16,7 @@ from results.evaluate_results import EvaluateResults
 from results.evaluations import Evaluations
 from results.results import Results
 
-TEST = 13
+TEST = 14
 
 if (TEST == 0):
     # Indexing test
@@ -123,3 +124,13 @@ elif(TEST == 13):
         "./data/results_with_rerank_21.txt", "./relevance_judgments_21.qrels", corpus)
     evaluate_results.save_results_to_file(
         "evaluation_results_21_with_reranking.txt")
+elif(TEST == 14):
+    # Test advanced wordnet expander
+    query = "What is better at reducing fever in children, Ibuprofen or Aspirin?"
+    preprocessor = GeneralPreprocessor()
+    query = preprocessor.process(query)
+    print(query)
+    query_expander = AdvancedWordnetExpander()
+    query = query_expander.expand(query)
+    query = preprocessor.process(query)
+    print(query)

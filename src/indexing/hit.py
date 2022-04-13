@@ -1,4 +1,4 @@
-from corpus import CorpusEntry
+from corpus.corpus import CorpusEntry
 
 
 class Hit:

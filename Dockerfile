@@ -25,8 +25,8 @@ RUN pipenv run python ./prepare_libraries.py
 WORKDIR /app
 
 # Copy sources and premade index
-COPY ./src/ /app/src/
 COPY ./data/ /app/data/
+COPY ./src/ /app/src/
 
 # Make directories for input and output files
 RUN mkdir /app/data/in && mkdir /app/data/out

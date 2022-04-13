@@ -1,6 +1,6 @@
 
 import math
-from corpus import Corpus
+from corpus.corpus import Corpus
 from results.results import Results
 from results.evaluations import Evaluations
 from results.score import Score

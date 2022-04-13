@@ -4,13 +4,14 @@ import os
 import argparse
 from batch_processing.batch_query_process import BatchQueryProcess
 import constants
-from corpus import Corpus
+from corpus.corpus import Corpus
 from indexing.bm25_indexer import BM25Indexer
 from indexing.index import Index
 from preprocessing.general_preprocessor import GeneralPreprocessor
 from preprocessing.preprocessor import Preprocessor
 from reranking.distilbert_reranker import DistilbertReranker
 from reranking.mono_t5_reranker import MonoT5Reranker
+from reranking.duo_t5_reranker import DuoT5Reranker
 from reranking.multi_reranker import MultiReranker
 from query_expansion.query_expander import QueryExpander
 from query_expansion.wordnet_expander import WordnetExpander
@@ -48,14 +49,24 @@ class Main:
         output_path = os.path.join(
             args.output_directory, constants.OUTPUT_FILE_NAME)
 
+        # Load default corpus
         corpus = Corpus()
-        mono_t5_reranker = MonoT5Reranker()
-        distilbert_reranker = DistilbertReranker()
-        multi_reranker = MultiReranker([mono_t5_reranker, distilbert_reranker])
-        index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),
-                      reranker=multi_reranker)
-        process = BatchQueryProcess(index)
-        process.execute(input_path, output_path, constants.METHOD_NAME)
+        if constants.METHOD_NAME == "BM25_with_mono_t5_bert":
+            mono_t5_reranker = MonoT5Reranker()
+            distilbert_reranker = DistilbertReranker()
+            multi_reranker = MultiReranker([mono_t5_reranker, distilbert_reranker])
+            index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),
+                        reranker=multi_reranker)
+            process = BatchQueryProcess(index)
+            process.execute(input_path, output_path, constants.METHOD_NAME)
+        elif constants.METHOD_NAME == "BM25_with_duo_t5_bert":
+            duo_t5_reranker = DuoT5Reranker()
+            distilbert_reranker = DistilbertReranker()
+            multi_reranker = MultiReranker([duo_t5_reranker, distilbert_reranker])
+            index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),
+                        reranker=multi_reranker)
+            process = BatchQueryProcess(index)
+            process.execute(input_path, output_path, constants.METHOD_NAME)
 
     def main_menu(self) -> None:
         while True:

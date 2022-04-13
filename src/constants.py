@@ -1,5 +1,5 @@
-DEBUG = True
-METHOD_NAME = "BM25_spell_checker_combined"
+DEBUG = False
+METHOD_NAME = "BM25_with_duo_t5_bert"
 INPUT_FILE_NAME = "topics.xml"
 OUTPUT_FILE_NAME = "run.txt"
 TEST_TITLES_FILE_LOCATION = "./data/topics.xml"

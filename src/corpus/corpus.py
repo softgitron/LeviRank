@@ -1,7 +1,7 @@
 import pickle
 import json
 import constants
-from corpus_entry import CorpusEntry
+from corpus.corpus_entry import CorpusEntry
 
 
 class Corpus:

@@ -1,6 +1,6 @@
 from language_tool_python import LanguageTool
 
-from corpus_entry import CorpusEntry
+from corpus.corpus_entry import CorpusEntry
 
 
 class SpellCheckerPreprocessor:
@@ -19,10 +19,14 @@ class SpellCheckerPreprocessor:
         return self.spell_checker._url[:-3]
 
     def score_corpus_entry(self, corpus_entry: CorpusEntry):
-        try:
-            spelling_errors = self.spell_checker.check(corpus_entry.contents)
-            corpus_entry.spelling_errors_count = len(spelling_errors)
-        except Exception as error:
-            print("Error occurred while trying to evaluate corpus entry.")
-            print("Spelling errors count will not be saved for the entry.")
-            print(error)
+        # Try again 3 times
+        for attempt in range(3):
+            try:
+                spelling_errors = self.spell_checker.check(corpus_entry.contents)
+                corpus_entry.spelling_errors_count = len(spelling_errors)
+                break
+            except Exception as error:
+                print("Error occurred while trying to evaluate corpus entry.")
+                print(f"Trying again {attempt + 1}/3")
+                print(error)
+                corpus_entry.spelling_errors_count = 999

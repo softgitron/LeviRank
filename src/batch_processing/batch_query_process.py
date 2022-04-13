@@ -19,6 +19,7 @@ class BatchQueryProcess:
         results = Results()
         results.method = method
 
+        print("Starting batch processing")
         topic_amount = len(topics.topic_list)
         for topic_number, topic in enumerate(topics):
             query_input = topic.title

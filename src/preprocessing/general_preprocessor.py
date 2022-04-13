@@ -10,7 +10,7 @@ from nltk.corpus import wordnet
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
-from corpus import Corpus
+from corpus.corpus import Corpus
 from preprocessing.preprocessor import Preprocessor
 from preprocessing.spell_checker_preprocessor import SpellCheckerPreprocessor
 
@@ -87,10 +87,10 @@ class GeneralPreprocessor(Preprocessor):
             # Score language
             spell_checker.score_corpus_entry(entry)
             # Preprocess
-            entry.contents = self.process(entry.contents)
+            entry.contents_preprocessed = self.process(entry.contents)
 
         # Remove empty entries from the corpus
-        filter(lambda entry: entry.contents == "", corpus.entries)
+        filter(lambda entry: entry.contents_preprocessed == "", corpus.entries)
         corpus.update_id_dictionary()
 
         return corpus
@@ -98,8 +98,6 @@ class GeneralPreprocessor(Preprocessor):
     # https://medium.com/almabetter/data-preprocessing-techniques-6b04d820fda2
     # Took ideas from this article, what could be preprocessed
     def process(self, document: str) -> str:
-        document += " 2006"
-
         # Lowercase all
         document = document.lower()
 

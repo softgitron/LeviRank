@@ -1,6 +1,6 @@
 import pyterrier as pt
 
-from corpus import Corpus
+from corpus.corpus import Corpus
 from indexing.hit import Hit
 from indexing.index import Indexer
 
@@ -14,10 +14,10 @@ class BM25Indexer(Indexer):
         self.corpus = corpus
         self.index_file_path = index_file_path
         self.indexer = pt.IterDictIndexer(self.index_file_path, meta=["id"], fields=[
-                                          "contents"], wmodel="BM25", threads=1)
+                                          "contents_preprocessed"], wmodel="BM25", threads=1)
 
     def index(self):
-        self.indexer.index(self.corpus, meta=["id"], fields=["contents"])
+        self.indexer.index(self.corpus, meta=["id"], fields=["contents_preprocessed"])
 
     def query(self, query: str) -> list[type[Hit]]:
         raw_results = pt.BatchRetrieve(

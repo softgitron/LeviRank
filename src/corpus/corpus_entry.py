@@ -1,6 +1,7 @@
 class CorpusEntry(dict):
     id: str
     contents: str
+    contents_preprocessed: str = None
     chat_noir_url: str
     spelling_errors_count: int
 
@@ -54,4 +55,4 @@ class CorpusEntry(dict):
         return iter(self.__dict__)
 
     def __repr__(self) -> str:
-        return f"""id: {self.id}, contents: "{self.contents}"\n"""
+        return f"""id: {self.id}, contents: "{self.contents}, contents_preprocessed: "{self.contents}"\n"""

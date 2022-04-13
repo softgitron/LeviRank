@@ -2,7 +2,7 @@ from typing import Union
 import pyterrier as pt
 
 import constants
-from corpus import Corpus
+from corpus.corpus import Corpus
 from indexing.hit import Hit
 from indexing.indexer import Indexer
 from preprocessing.preprocessor import Preprocessor

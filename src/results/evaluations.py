@@ -1,4 +1,4 @@
-from corpus import Corpus
+from corpus.corpus import Corpus
 
 
 class Evaluations:

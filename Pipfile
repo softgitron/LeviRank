@@ -9,6 +9,8 @@ pytrec-eval-terrier = "==0.5.2"
 language-tool-python = "*"
 sentence-transformers = "*"
 nptyping = "==1.4.4"
+spacy = "*"
+gensim = "*"
 
 [dev-packages]
 autopep8 = "*"

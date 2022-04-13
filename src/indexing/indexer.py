@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from corpus import Corpus
+from corpus.corpus import Corpus
 from indexing.hit import Hit
 
 
