@@ -16,7 +16,7 @@ from results.evaluate_results import EvaluateResults
 from results.evaluations import Evaluations
 from results.results import Results
 
-TEST = 14
+TEST = 3
 
 if (TEST == 0):
     # Indexing test
@@ -36,8 +36,8 @@ elif(TEST == 2):
     corpus = general_preprocessing.process_corpus(corpus)
 elif(TEST == 3):
     # Test queyring
-    corpus = Corpus(corpus_file_path="./data/corpus/pp.dat")
-    index = Index(BM25Indexer, corpus, "./data/index/preprocessed_index")
+    corpus = Corpus(corpus_file_path="./data/corpus.dat")
+    index = Index(BM25Indexer, corpus)
     index.query("car", verbose=True)
 elif(TEST == 4):
     # Test processing pipeline

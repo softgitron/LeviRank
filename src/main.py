@@ -15,6 +15,7 @@ from reranking.duo_t5_reranker import DuoT5Reranker
 from reranking.multi_reranker import MultiReranker
 from query_expansion.query_expander import QueryExpander
 from query_expansion.wordnet_expander import WordnetExpander
+from query_expansion.advanced_wordnet_expander import AdvancedWordnetExpander
 from results.evaluate_results import EvaluateResults
 
 
@@ -51,15 +52,19 @@ class Main:
 
         # Load default corpus
         corpus = Corpus()
-        if constants.METHOD_NAME == "BM25_with_mono_t5_bert":
+        if constants.METHOD_NAME == "BM25":
             mono_t5_reranker = MonoT5Reranker()
-            distilbert_reranker = DistilbertReranker()
-            multi_reranker = MultiReranker([mono_t5_reranker, distilbert_reranker])
-            index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),
-                        reranker=multi_reranker)
+            index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),)
             process = BatchQueryProcess(index)
             process.execute(input_path, output_path, constants.METHOD_NAME)
-        elif constants.METHOD_NAME == "BM25_with_duo_t5_bert":
+        elif constants.METHOD_NAME == "BM25_with_mono_t5":
+            advanced_wordnet_expander = AdvancedWordnetExpander()
+            mono_t5_reranker = MonoT5Reranker()
+            index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),
+                        reranker=mono_t5_reranker, query_expander=advanced_wordnet_expander)
+            process = BatchQueryProcess(index)
+            process.execute(input_path, output_path, constants.METHOD_NAME)
+        elif constants.METHOD_NAME == "BM25_with_duo_t5":
             duo_t5_reranker = DuoT5Reranker()
             distilbert_reranker = DistilbertReranker()
             multi_reranker = MultiReranker([duo_t5_reranker, distilbert_reranker])
@@ -149,12 +154,12 @@ Corpus options:
 0. Go back""")
             option = input("Select the operation: ")
             if option == "1":
-                self.corpus = self.corpus.write_corpus_pickle(
+                self.corpus.write_corpus_pickle(
                     constants.CORPUS_PICKLE_FILE_LOCATION)
                 print("Saved.")
             elif option == "2":
                 file_path = input("Enter file path: ")
-                self.corpus = self.corpus.write_corpus_pickle(
+                self.corpus.write_corpus_pickle(
                     file_path)
                 print("Saved.")
             elif option == "0":
@@ -177,7 +182,7 @@ Preprocessing options:
             if option == "1":
                 self.preprocessor = GeneralPreprocessor(verbose=True)
                 print("Preprocessor set to generic preprocessor.")
-            if option == "2":
+            elif option == "2":
                 self.preprocessor = GeneralPreprocessor(
                     verbose=True, parallel=True)
                 print("Preprocessor set to generic parallel preprocessor.")

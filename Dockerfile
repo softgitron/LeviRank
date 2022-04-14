@@ -14,13 +14,14 @@ COPY ./Pipfile* ./
 RUN pipenv install --system --deploy --ignore-pipfile --verbose
 
 # Install special environments
-COPY ./src/special_environments/t5_reranker/ /app/src/special_environments/t5_reranker/
+COPY ./src/special_environments/t5_reranker/Pipfile* /app/src/special_environments/t5_reranker/
 RUN cd ./src/special_environments/t5_reranker && pipenv install -v
 
 # Prepare libraries
 COPY ./src/prepare_libraries.py /app/src/prepare_libraries.py
 RUN python /app/src/prepare_libraries.py
 WORKDIR /app/src/special_environments/t5_reranker
+COPY ./src/special_environments/t5_reranker/prepare_libraries.py /app/src/special_environments/t5_reranker/prepare_libraries.py
 RUN pipenv run python ./prepare_libraries.py
 WORKDIR /app
 

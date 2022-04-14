@@ -10,7 +10,12 @@ class CorpusEntry(dict):
         self.__dict__[key] = item
 
     def __getitem__(self, key):
-        return self.__dict__[key]
+        if key == "docno":
+            return self.id
+        elif key == "text":
+            return self.contents_preprocessed
+        else:
+            return self.__dict__[key]
 
     def __len__(self):
         return len(self.__dict__)

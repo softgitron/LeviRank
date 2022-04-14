@@ -13,7 +13,7 @@ class BM25Indexer(Indexer):
     def __init__(self, corpus: Corpus, index_file_path: str):
         self.corpus = corpus
         self.index_file_path = index_file_path
-        self.indexer = pt.IterDictIndexer(self.index_file_path, meta=["id"], fields=[
+        self.indexer = pt.IterDictIndexer(self.index_file_path, meta=["id"], meta_reverse=["id"], fields=[
                                           "contents_preprocessed"], wmodel="BM25", threads=1)
 
     def index(self):

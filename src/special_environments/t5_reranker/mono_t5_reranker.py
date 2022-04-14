@@ -15,7 +15,7 @@ reranker = MonoT5()
 query_texts = []
 for hit in hit_list:
     corpus_entry_content = hit.corpus_entry.contents
-    text = Text(corpus_entry_content, {
+    text = Text(corpus_entry_content, {"id": hit.id,
                 "corpus_entry": hit.corpus_entry}, 0)
     query_texts.append(text)
 
@@ -25,8 +25,8 @@ reranks = reranker.rerank(query_object, query_texts)
 
 # Form new hit list based on the reranked results
 reranked_hit_list = []
-for id, rerank in enumerate(reranks):
-    hit = Hit(id, rerank.score)
+for rerank in reranks:
+    hit = Hit(rerank.metadata["id"], rerank.score)
     hit.corpus_entry = rerank.metadata["corpus_entry"]
     reranked_hit_list.append(hit)
 
