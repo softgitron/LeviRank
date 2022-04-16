@@ -15,8 +15,12 @@ from reranking.multi_reranker import MultiReranker
 from results.evaluate_results import EvaluateResults
 from results.evaluations import Evaluations
 from results.results import Results
+from batch_processing.topics import Topics
+from indexing.queries import Queries
+from indexing.hit import Hit
+from reranking.spelling_error_reranker import SpellingErrorReranker
 
-TEST = 3
+TEST = 15
 
 if (TEST == 0):
     # Indexing test
@@ -126,11 +130,27 @@ elif(TEST == 13):
         "evaluation_results_21_with_reranking.txt")
 elif(TEST == 14):
     # Test advanced wordnet expander
-    query = "What is better at reducing fever in children, Ibuprofen or Aspirin?"
     preprocessor = GeneralPreprocessor()
-    query = preprocessor.process(query)
-    print(query)
     query_expander = AdvancedWordnetExpander()
-    query = query_expander.expand(query)
-    query = preprocessor.process(query)
-    print(query)
+
+    topics = Topics("./data/topics.xml")
+
+    for topic in topics:
+        queries = Queries(topic.title, topic.title)
+        queries.preprocessed_query = preprocessor.process(queries.original_query)
+        queries.preprocessed_query = query_expander.expand(queries)
+        print(f"{queries.original_query} -> {queries.preprocessed_query}")
+
+elif(TEST == 15):
+    # Test that spelling error reranker works
+    corpus_entry1 = CorpusEntry()
+    corpus_entry1.spelling_errors_count = 100
+    corpus_entry2 = CorpusEntry()
+    corpus_entry2.spelling_errors_count = 50
+    hit1 = Hit("1", 1)
+    hit1.corpus_entry = corpus_entry1
+    hit2 = Hit("2", 2)
+    hit2.corpus_entry = corpus_entry2
+    hit_list = [hit1, hit2]
+    spelling_error_reranker = SpellingErrorReranker()
+    spelling_error_reranker.rerank(Queries("", ""), hit_list)

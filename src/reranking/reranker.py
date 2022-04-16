@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from indexing.hit import Hit
+from indexing.queries import Queries
 
 
-class Reranker:
+class Reranker:  
     @abstractmethod
-    def rerank(self, query: str, hit_list: list[Hit]) -> list[Hit]:
+    def rerank(self, queries: Queries, hit_list: list[Hit]) -> list[Hit]:
         pass

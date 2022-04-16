@@ -17,6 +17,7 @@ from query_expansion.query_expander import QueryExpander
 from query_expansion.wordnet_expander import WordnetExpander
 from query_expansion.advanced_wordnet_expander import AdvancedWordnetExpander
 from results.evaluate_results import EvaluateResults
+from reranking.spelling_error_reranker import SpellingErrorReranker
 
 
 class Main:
@@ -58,16 +59,26 @@ class Main:
             process = BatchQueryProcess(index)
             process.execute(input_path, output_path, constants.METHOD_NAME)
         elif constants.METHOD_NAME == "BM25_with_mono_t5":
-            advanced_wordnet_expander = AdvancedWordnetExpander()
+            # advanced_wordnet_expander = AdvancedWordnetExpander()
             mono_t5_reranker = MonoT5Reranker()
             index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),
-                        reranker=mono_t5_reranker, query_expander=advanced_wordnet_expander)
+                        reranker=mono_t5_reranker)
             process = BatchQueryProcess(index)
             process.execute(input_path, output_path, constants.METHOD_NAME)
         elif constants.METHOD_NAME == "BM25_with_duo_t5":
             duo_t5_reranker = DuoT5Reranker()
             distilbert_reranker = DistilbertReranker()
             multi_reranker = MultiReranker([duo_t5_reranker, distilbert_reranker])
+            index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),
+                        reranker=multi_reranker)
+            process = BatchQueryProcess(index)
+            process.execute(input_path, output_path, constants.METHOD_NAME)
+        elif constants.METHOD_NAME == "BM25_with_duo_t5_and_advanced_expander":
+            advanced_wordnet_expander = AdvancedWordnetExpander()
+            spelling_error_reranker = SpellingErrorReranker()
+            mono_t5_reranker = MonoT5Reranker()
+            duo_t5_reranker = DuoT5Reranker()
+            multi_reranker = MultiReranker([spelling_error_reranker, mono_t5_reranker, duo_t5_reranker])
             index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),
                         reranker=multi_reranker)
             process = BatchQueryProcess(index)

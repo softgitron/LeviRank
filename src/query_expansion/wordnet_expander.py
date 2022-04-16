@@ -1,10 +1,11 @@
 from nltk.corpus import wordnet
 from query_expansion.query_expander import QueryExpander
+from indexing.queries import Queries
 
 
 class WordnetExpander(QueryExpander):
-    def expand(self, query) -> str:
-        query_words = query.split(" ")
+    def expand(self, queries: Queries) -> str:
+        query_words = queries.preprocessed_query.split(" ")
 
         all_entries = query_words.copy()
         # Find synonyms for every words in the query and append them to new query

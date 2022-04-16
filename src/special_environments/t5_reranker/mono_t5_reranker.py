@@ -6,7 +6,7 @@ from pygaggle.rerank.transformer import MonoT5
 
 # Load parameters from the stdin
 parameters_tuple = pickle.load(sys.stdin.buffer)
-query, hit_list = parameters_tuple
+queries, hit_list = parameters_tuple
 
 # Create reranker
 reranker = MonoT5()
@@ -20,7 +20,7 @@ for hit in hit_list:
     query_texts.append(text)
 
 # Form query object
-query_object = Query(query)
+query_object = Query(queries.original_query)
 reranks = reranker.rerank(query_object, query_texts)
 
 # Form new hit list based on the reranked results

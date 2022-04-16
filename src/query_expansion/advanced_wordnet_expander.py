@@ -2,9 +2,13 @@ import spacy
 from nltk.corpus import wordnet
 import gensim.downloader as gensim_api
 from query_expansion.query_expander import QueryExpander
+from indexing.queries import Queries
 
 
 class AdvancedWordnetExpander(QueryExpander):
+    SYNONYM_LIMIT = 2
+    ANTONYM_LIMIT = 1
+
     spacy_object = None
     model_glove = None
 
@@ -12,19 +16,17 @@ class AdvancedWordnetExpander(QueryExpander):
         self.spacy_object = spacy.load("en_core_web_sm")
         self.model_glove = gensim_api.load("glove-wiki-gigaword-300")
 
-    def expand(self, query: str) -> str:
-        query_object = self.spacy_object(query)
+    def expand(self, queries: Queries) -> str:
+        query_object = self.spacy_object(queries.preprocessed_query)
 
         # Get tokens for the query
-        new_query_candidates = []
+        new_query_terms = []
         for token in query_object:
             synonyms, antonyms = self.synonym_antonym_extractor(token.text)
             synonyms, antonyms = self.best_words_extractor(token.text, synonyms, antonyms)
-            new_query_candidates.append(token.text)
-            new_query_candidates += synonyms + antonyms
+            new_query_terms.append(token.text)
+            new_query_terms += synonyms + antonyms
         
-        # Remove duplicates
-        new_query_terms = list(dict.fromkeys(new_query_candidates))
         new_query = " ".join(new_query_terms)
 
         return new_query
@@ -74,13 +76,13 @@ class AdvancedWordnetExpander(QueryExpander):
         antonym_score_dictionary = {k: v for k, v in sorted(antonym_score_dictionary.items(), reverse=True, key=lambda item: item[1])}
         antonym_score_dictionary = {k: antonym_score_dictionary[k] for k in list(antonym_score_dictionary)[:20]}
 
-        if len(synonym_score_dictionary) > 3:
-            synonym_results = list(synonym_score_dictionary.keys())[:3]
+        if len(synonym_score_dictionary) > self.SYNONYM_LIMIT:
+            synonym_results = list(synonym_score_dictionary.keys())[:self.SYNONYM_LIMIT]
         else:
             synonym_results = list(synonym_score_dictionary.keys())
 
-        if len(antonym_score_dictionary) > 3:
-            antonym_results = list(antonym_score_dictionary.keys())[:3]
+        if len(antonym_score_dictionary) > self.ANTONYM_LIMIT:
+            antonym_results = list(antonym_score_dictionary.keys())[:self.ANTONYM_LIMIT]
         else:
             antonym_results = list(antonym_score_dictionary.keys())
 

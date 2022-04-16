@@ -29,6 +29,10 @@ class BatchQueryProcess:
 
             # Write results to the string
             for rank, hit in enumerate(hit_list):
+                # Add at maximum 1000 results
+                if rank >= 1000:
+                    break
+
                 # Create and add result to results
                 result = Result(topic.number, "Q0", hit.id,
                                 rank + 1, hit.score)

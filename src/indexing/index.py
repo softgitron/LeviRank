@@ -8,6 +8,7 @@ from indexing.indexer import Indexer
 from preprocessing.preprocessor import Preprocessor
 from query_expansion.query_expander import QueryExpander
 from reranking.reranker import Reranker
+from indexing.queries import Queries
 
 
 class Index:
@@ -36,19 +37,25 @@ class Index:
         self.indexer.index()
 
     def query(self, query: str, verbose=False) -> list[Hit]:
+        # Save original query
+        queries = Queries(query, query)
+
         # Preprocess query, if there is preprocessor available
         if self.preprocessor:
-            query = self.preprocessor.process(query)
+            queries.preprocessed_query = self.preprocessor.process(queries.preprocessed_query)
 
         # Expand query, if there is query expander available
         if self.query_expander:
-            query = self.query_expander.expand(query)
+            queries.expanded_without_post_processing = self.query_expander.expand(queries.preprocessed_query)
             # Preprocess again after expansion to avoid problems with special signs
             if self.preprocessor:
-                query = self.preprocessor.process(query)
+                queries.preprocessed_query = self.preprocessor.process(queries.preprocessed_query)
+
+            # Remove duplicates
+            queries.preprocessed_query = list(dict.fromkeys(queries.preprocessed_query))
 
         # Get query results from the indexer
-        results = self.indexer.query(query)
+        results = self.indexer.query(queries.preprocessed_query)
 
         # Link corpus to the hit objects if available
         if not self.corpus:
@@ -59,7 +66,7 @@ class Index:
 
         # If reranker is available, rerank the results
         if self.reranker:
-            results = self.reranker.rerank(query, results)
+            results = self.reranker.rerank(queries, results)
 
         if verbose:
             for i in range(10):

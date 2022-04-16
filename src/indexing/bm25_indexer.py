@@ -9,6 +9,7 @@ class BM25Indexer(Indexer):
     corpus: Corpus
     index_file_path: str
     indexer = None
+    num_results = 5000
 
     def __init__(self, corpus: Corpus, index_file_path: str):
         self.corpus = corpus
@@ -21,7 +22,7 @@ class BM25Indexer(Indexer):
 
     def query(self, query: str) -> list[type[Hit]]:
         raw_results = pt.BatchRetrieve(
-            self.indexer, metadata=["id"]).search(query)
+            self.indexer, metadata=["id"], num_results=self.num_results).search(query)
         results = [0] * len(raw_results)
         for i in range(len(results)):
             results[i] = Hit(raw_results["id"][i], raw_results["score"][i])

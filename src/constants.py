@@ -1,5 +1,5 @@
 DEBUG = False
-METHOD_NAME = "BM25_with_mono_t5"
+METHOD_NAME = "BM25_with_duo_t5_and_advanced_expander"
 INPUT_FILE_NAME = "topics.xml"
 OUTPUT_FILE_NAME = "run.txt"
 TEST_TITLES_FILE_LOCATION = "./data/topics.xml"
