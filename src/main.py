@@ -18,6 +18,8 @@ from query_expansion.wordnet_expander import WordnetExpander
 from query_expansion.advanced_wordnet_expander import AdvancedWordnetExpander
 from results.evaluate_results import EvaluateResults
 from reranking.spelling_error_reranker import SpellingErrorReranker
+from sentiment_analysing.general_sentiment_analyzer import GeneralSentimentAnalyzer
+from preprocessing.baseline_preprocessor import BaselinePreprocessor
 
 
 class Main:
@@ -53,17 +55,18 @@ class Main:
 
         # Load default corpus
         corpus = Corpus()
+        sentiment_analyzer = GeneralSentimentAnalyzer()
         if constants.METHOD_NAME == "BM25":
             mono_t5_reranker = MonoT5Reranker()
             index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),)
-            process = BatchQueryProcess(index)
+            process = BatchQueryProcess(index, sentiment_analyzer)
             process.execute(input_path, output_path, constants.METHOD_NAME)
         elif constants.METHOD_NAME == "BM25_with_mono_t5":
             # advanced_wordnet_expander = AdvancedWordnetExpander()
             mono_t5_reranker = MonoT5Reranker()
             index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),
                         reranker=mono_t5_reranker)
-            process = BatchQueryProcess(index)
+            process = BatchQueryProcess(index, sentiment_analyzer)
             process.execute(input_path, output_path, constants.METHOD_NAME)
         elif constants.METHOD_NAME == "BM25_with_duo_t5":
             duo_t5_reranker = DuoT5Reranker()
@@ -71,7 +74,7 @@ class Main:
             multi_reranker = MultiReranker([duo_t5_reranker, distilbert_reranker])
             index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),
                         reranker=multi_reranker)
-            process = BatchQueryProcess(index)
+            process = BatchQueryProcess(index, sentiment_analyzer)
             process.execute(input_path, output_path, constants.METHOD_NAME)
         elif constants.METHOD_NAME == "BM25_with_duo_t5_and_advanced_expander":
             advanced_wordnet_expander = AdvancedWordnetExpander()
@@ -81,7 +84,16 @@ class Main:
             multi_reranker = MultiReranker([spelling_error_reranker, mono_t5_reranker, duo_t5_reranker])
             index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),
                         reranker=multi_reranker)
-            process = BatchQueryProcess(index)
+            process = BatchQueryProcess(index, sentiment_analyzer)
+            process.execute(input_path, output_path, constants.METHOD_NAME)
+        elif constants.METHOD_NAME == "Captain-levi_Baseline_simple_preprocess_BM25_mono_duo_T5_Roberta":
+            mono_t5_reranker = MonoT5Reranker()
+            duo_t5_reranker = DuoT5Reranker()
+            multi_reranker = MultiReranker([mono_t5_reranker, duo_t5_reranker])
+            preprocessor = BaselinePreprocessor()
+            index = Index(BM25Indexer, corpus=corpus, preprocessor=preprocessor,
+                        reranker=multi_reranker)
+            process = BatchQueryProcess(index, sentiment_analyzer)
             process.execute(input_path, output_path, constants.METHOD_NAME)
 
     def main_menu(self) -> None:

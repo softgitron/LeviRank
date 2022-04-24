@@ -19,13 +19,15 @@ from batch_processing.topics import Topics
 from indexing.queries import Queries
 from indexing.hit import Hit
 from reranking.spelling_error_reranker import SpellingErrorReranker
+from sentiment_analysing.general_sentiment_analyzer import GeneralSentimentAnalyzer
+from preprocessing.baseline_preprocessor import BaselinePreprocessor
 
-TEST = 15
+TEST = 16
 
 if (TEST == 0):
     # Indexing test
     # Load corpus via default fashion.
-    corpus = Corpus(corpus_file_path=constants.CORPUS_JSONL_FILE_LOCATION)
+    corpus = Corpus()
     # Create new index
     index = Index(BM25Indexer, corpus)
     index.update()
@@ -154,3 +156,18 @@ elif(TEST == 15):
     hit_list = [hit1, hit2]
     spelling_error_reranker = SpellingErrorReranker()
     spelling_error_reranker.rerank(Queries("", ""), hit_list)
+elif(TEST == 16):
+    corpus = Corpus(corpus_file_path="./data/corpus.pkl")
+    sentiment_analyzer = GeneralSentimentAnalyzer()
+    queries = Queries("What is better at reducing fever in children, Ibuprofen or Aspirin?", "What is better at reducing fever in children, Ibuprofen or Aspirin?")
+    sentiment = sentiment_analyzer.analyze(queries, corpus.entries[0].contents)
+    print(sentiment)
+elif(TEST == 17):
+    preprocessor = GeneralPreprocessor()
+    print(preprocessor.process("What is better at reducing fever in children, Ibuprofen or Aspirin?"))
+elif(TEST == 18):
+    # Baseline preprocessing with saving
+    corpus = Corpus(corpus_file_path="./test_data/passages.jsonl")
+    baseline_preprocessor = BaselinePreprocessor(verbose=True, parallel=True)
+    baseline_preprocessor.process_corpus(corpus)
+    corpus.write_corpus_pickle("./data/corpus.pkl")

@@ -1,5 +1,6 @@
 import pickle
 import sys
+import constants
 from indexing.hit import Hit
 from pygaggle.rerank.base import Query, Text
 from pygaggle.rerank.transformer import DuoT5
@@ -12,9 +13,9 @@ queries, hit_list = parameters_tuple
 reranker = DuoT5()
 
 # Receive original preprocessed texts
-# Take only first 100 entries
+# Take only first x entries
 query_texts = []
-for hit in hit_list[:100]:
+for hit in hit_list[:constants.DUO_T5_COVERAGE]:
     corpus_entry_content = hit.corpus_entry.contents
     text = Text(corpus_entry_content, {"docid": hit.id,
                 "corpus_entry": hit.corpus_entry}, hit.score)
@@ -32,7 +33,7 @@ for rerank in reranks:
     reranked_hit_list.append(hit)
 
 # Merge rest of the original list to the new list
-reranked_hit_list += hit_list[100:]
+reranked_hit_list += hit_list[constants.DUO_T5_COVERAGE:]
 
 # Dump generated output into stdout
 pickle.dump(reranked_hit_list, sys.stdout.buffer)

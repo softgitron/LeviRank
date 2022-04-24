@@ -1,4 +1,5 @@
 from indexing.index import Index
+from sentiment_analysing.sentiment_analyzer import SentimentAnalyzer
 from preprocessing.preprocessor import Preprocessor
 from batch_processing.topics import Topics
 from results.result import Result
@@ -7,9 +8,11 @@ from results.results import Results
 
 class BatchQueryProcess:
     index: Index = None
+    sentiment_analyzer: SentimentAnalyzer = None
 
-    def __init__(self, index):
+    def __init__(self, index: Index, sentiment_analyzer: SentimentAnalyzer):
         self.index = index
+        self.sentiment_analyzer = sentiment_analyzer
 
     def execute(self, input_path: str, output_path: str, method: str):
         # Load topics
@@ -33,8 +36,12 @@ class BatchQueryProcess:
                 if rank >= 1000:
                     break
 
+                # Analyze sentiments
+                queries = self.index.expand_query(query_input)
+                sentiment = self.sentiment_analyzer.analyze(queries, hit.corpus_entry.contents)
+
                 # Create and add result to results
-                result = Result(topic.number, "Q0", hit.id,
+                result = Result(topic.number, sentiment, hit.id,
                                 rank + 1, hit.score)
                 results.append(result)
 

@@ -25,7 +25,7 @@ COPY ./src/special_environments/t5_reranker/prepare_libraries.py /app/src/specia
 RUN pipenv run python ./prepare_libraries.py
 WORKDIR /app
 
-# Copy sources and premade index
+# Copy premade files and source codes
 COPY ./data/ /app/data/
 COPY ./src/ /app/src/
 

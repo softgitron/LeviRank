@@ -37,22 +37,8 @@ class Index:
         self.indexer.index()
 
     def query(self, query: str, verbose=False) -> list[Hit]:
-        # Save original query
-        queries = Queries(query, query)
-
-        # Preprocess query, if there is preprocessor available
-        if self.preprocessor:
-            queries.preprocessed_query = self.preprocessor.process(queries.preprocessed_query)
-
-        # Expand query, if there is query expander available
-        if self.query_expander:
-            queries.expanded_without_post_processing = self.query_expander.expand(queries.preprocessed_query)
-            # Preprocess again after expansion to avoid problems with special signs
-            if self.preprocessor:
-                queries.preprocessed_query = self.preprocessor.process(queries.preprocessed_query)
-
-            # Remove duplicates
-            queries.preprocessed_query = list(dict.fromkeys(queries.preprocessed_query))
+        # Expand query
+        queries = self.expand_query(query)
 
         # Get query results from the indexer
         results = self.indexer.query(queries.preprocessed_query)
@@ -76,3 +62,23 @@ class Index:
                     f"Id: {results[i].corpus_entry.id} | Contents: {contents}")
 
         return results
+
+    def expand_query(self, query):
+        # Save original query
+        queries = Queries(query, query)
+
+        # Preprocess query, if there is preprocessor available
+        if self.preprocessor:
+            queries.preprocessed_query = self.preprocessor.process(queries.preprocessed_query)
+
+        # Expand query, if there is query expander available
+        if self.query_expander:
+            queries.expanded_without_post_processing = self.query_expander.expand(queries.preprocessed_query)
+            # Preprocess again after expansion to avoid problems with special signs
+            if self.preprocessor:
+                queries.preprocessed_query = self.preprocessor.process(queries.preprocessed_query)
+
+            # Remove duplicates
+            queries.preprocessed_query = list(dict.fromkeys(queries.preprocessed_query))
+
+        return queries

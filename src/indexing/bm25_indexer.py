@@ -1,5 +1,5 @@
 import pyterrier as pt
-
+import constants
 from corpus.corpus import Corpus
 from indexing.hit import Hit
 from indexing.index import Indexer
@@ -9,13 +9,13 @@ class BM25Indexer(Indexer):
     corpus: Corpus
     index_file_path: str
     indexer = None
-    num_results = 5000
+    num_results = constants.INITIAL_RETRIEVAL_AMOUNT
 
     def __init__(self, corpus: Corpus, index_file_path: str):
         self.corpus = corpus
         self.index_file_path = index_file_path
         self.indexer = pt.IterDictIndexer(self.index_file_path, meta=["id"], meta_reverse=["id"], fields=[
-                                          "contents_preprocessed"], wmodel="BM25", threads=1)
+                                          "contents_preprocessed"], controls={"wmodel":"BM25", "k_1":"1.2d", "b":"0.68d"}, threads=1)
 
     def index(self):
         self.indexer.index(self.corpus, meta=["id"], fields=["contents_preprocessed"])
