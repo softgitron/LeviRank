@@ -24,7 +24,7 @@ class Index:
                  index_file_path: str = constants.INDEX_FILE_LOCATION):
         # Initialize python terrier
         if not pt.started():
-            pt.init()
+            pt.init(version = 5.5, helper_version = "0.0.6")
 
         self.corpus = corpus
         self.index_file_path = index_file_path

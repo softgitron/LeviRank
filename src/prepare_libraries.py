@@ -20,6 +20,6 @@ os.system("python -m spacy download en_core_web_sm")
 gensim_api.load("glove-wiki-gigaword-300")
 LanguageTool('en-US')
 if not pt.started():
-    pt.init()
+    pt.init(version = 5.5, helper_version = "0.0.6")
 SentenceTransformer(
     'sentence-transformers/msmarco-distilbert-base-tas-b')

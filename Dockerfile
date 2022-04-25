@@ -25,6 +25,10 @@ COPY ./src/special_environments/t5_reranker/prepare_libraries.py /app/src/specia
 RUN pipenv run python ./prepare_libraries.py
 WORKDIR /app
 
+# Define environment as offline
+ENV HF_DATASETS_OFFLINE=1
+ENV TRANSFORMERS_OFFLINE=1
+
 # Copy premade files and source codes
 COPY ./data/ /app/data/
 COPY ./src/ /app/src/

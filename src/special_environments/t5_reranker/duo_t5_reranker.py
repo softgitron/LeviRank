@@ -1,3 +1,9 @@
+import os
+import sys
+# Modify environment parameters
+os.environ["HF_DATASETS_OFFLINE"] = "1"
+os.environ["TRANSFORMERS_OFFLINE"] = "1"
+
 import pickle
 import sys
 import constants

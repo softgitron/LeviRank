@@ -22,8 +22,10 @@ class SpecialEnvironmentHelper:
         custom_environment_variables = os.environ.copy()
         custom_environment_variables["PIPENV_IGNORE_VIRTUALENVS"] = "1"
         custom_environment_variables["PYTHONPATH"] = os.path.abspath("./src")
+        custom_environment_variables["HF_DATASETS_OFFLINE"] = "1"
+        custom_environment_variables["TRANSFORMERS_OFFLINE"] = "1"
         if constants.DEBUG:
-            stderr = None
+            stderr = subprocess.STD_ERROR_HANDLE
         else:
             stderr = subprocess.DEVNULL
         child = subprocess.Popen([pipenv_location, "run", "python", self.special_environment_binary],
@@ -34,8 +36,15 @@ class SpecialEnvironmentHelper:
         pickle.dump((queries, hit_list), child.stdin)
         child.stdin.close()
 
-        # Convert output to normal list again
-        output = pickle.load(child.stdout)
-        child.stdout.close()
+        # Very hacky! Initialization may cause some trash to stdout
+        # Flush stdout and try again.
+        for attempt in range(1000):
+            try:
+                # Convert output to normal list again
+                output = pickle.load(child.stdout)
+                child.stdout.close()
+                break
+            except:
+                child.stdout.readline()
 
         return output

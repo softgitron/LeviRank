@@ -33,4 +33,4 @@ if [ -z "$OUTPUT_PATH" ]; then
 fi
 
 
-docker run -it --gpus '"device=0"' --mount type=bind,source="$INPUT_PATH",target=/app/data/in --mount type=bind,source="$OUTPUT_PATH",target=/app/data/out touche-2022 -i /app/data/in -o /app/data/out
+docker run -it --gpus '"device=0"' --network none --mount type=bind,source="$INPUT_PATH",target=/app/data/in --mount type=bind,source="$OUTPUT_PATH",target=/app/data/out touche-2022 -i /app/data/in -o /app/data/out
