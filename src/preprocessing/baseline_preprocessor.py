@@ -74,7 +74,8 @@ class BaselinePreprocessor(Preprocessor):
             entry.contents_preprocessed = self.process(entry.contents)
 
             # Remove XML tag also from original
-            entry.contents = re.sub("[</]query", "", entry.contents)
+            entry.contents = entry.contents.replace("<query>", " ")
+            entry.contents = entry.contents.replace("</query>", " ")
 
         # Remove empty entries from the corpus
         filter(lambda entry: entry.contents_preprocessed == "", corpus.entries)
@@ -89,13 +90,13 @@ class BaselinePreprocessor(Preprocessor):
         document = document.lower()
 
         # Remove punctuation and numbers
-        document = re.sub(r"[^A-Za-z\s]+", "", document)
+        document = re.sub(r"[^A-Za-z\s]+", " ", document)
 
         # Remove extra XML query tag
-        document = re.sub("[</]query", "", document)
+        document = document.replace("query", " ")
 
         # Remove extra white spaces
-        document = re.sub(r"[\s]{2,}", "", document)
+        document = re.sub(r"[\s]{2,}", " ", document)
 
         # Tokenize string
         word_tokens = word_tokenize(document)

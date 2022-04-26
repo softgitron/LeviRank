@@ -39,6 +39,7 @@ class GeneralSentimentAnalyzer(SentimentAnalyzer):
         # first step
         # predicting neutral or not
         first = self.object_predictor(evidence, claim, self.tokenizer_n, self.model_n)
+        final = 1
         if first == 1:
             final = 1
         elif first == 0:

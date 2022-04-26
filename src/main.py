@@ -86,7 +86,7 @@ class Main:
                         reranker=multi_reranker)
             process = BatchQueryProcess(index, sentiment_analyzer)
             process.execute(input_path, output_path, constants.METHOD_NAME)
-        elif constants.METHOD_NAME == "Captain-levi_Baseline_simple_preprocess_BM25_mono_duo_T5_Roberta":
+        elif constants.METHOD_NAME == "levirank_baseline":
             mono_t5_reranker = MonoT5Reranker()
             duo_t5_reranker = DuoT5Reranker()
             multi_reranker = MultiReranker([mono_t5_reranker, duo_t5_reranker])

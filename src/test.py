@@ -22,7 +22,7 @@ from reranking.spelling_error_reranker import SpellingErrorReranker
 from sentiment_analysing.general_sentiment_analyzer import GeneralSentimentAnalyzer
 from preprocessing.baseline_preprocessor import BaselinePreprocessor
 
-TEST = 16
+TEST = 0
 
 if (TEST == 0):
     # Indexing test

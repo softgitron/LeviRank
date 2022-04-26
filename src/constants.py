@@ -1,5 +1,5 @@
 DEBUG = False
-METHOD_NAME = "Captain-levi_Baseline_simple_preprocess_BM25_mono_duo_T5_Roberta"
+METHOD_NAME = "levirank_baseline"
 INPUT_FILE_NAME = "topics.xml"
 OUTPUT_FILE_NAME = "run.txt"
 TEST_TITLES_FILE_LOCATION = "./data/topics.xml"
