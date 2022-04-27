@@ -6,6 +6,7 @@ from batch_processing.batch_query_process import BatchQueryProcess
 import constants
 from corpus.corpus import Corpus
 from indexing.bm25_indexer import BM25Indexer
+from indexing.dense_vote_indexer import DenseVoteIndexer
 from indexing.index import Index
 from preprocessing.general_preprocessor import GeneralPreprocessor
 from preprocessing.preprocessor import Preprocessor
@@ -93,6 +94,13 @@ class Main:
             preprocessor = BaselinePreprocessor()
             index = Index(BM25Indexer, corpus=corpus, preprocessor=preprocessor,
                         reranker=multi_reranker)
+            process = BatchQueryProcess(index, sentiment_analyzer)
+            process.execute(input_path, output_path, constants.METHOD_NAME)
+        elif constants.METHOD_NAME == "levirank_dense_vote_initial_retrieval":
+            mono_t5_reranker = MonoT5Reranker()
+            duo_t5_reranker = DuoT5Reranker()
+            multi_reranker = MultiReranker([mono_t5_reranker, duo_t5_reranker])
+            index = Index(DenseVoteIndexer, corpus=corpus, reranker=multi_reranker, index_file_path="./data/dense_index")
             process = BatchQueryProcess(index, sentiment_analyzer)
             process.execute(input_path, output_path, constants.METHOD_NAME)
 

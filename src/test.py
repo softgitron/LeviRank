@@ -21,8 +21,9 @@ from indexing.hit import Hit
 from reranking.spelling_error_reranker import SpellingErrorReranker
 from sentiment_analysing.general_sentiment_analyzer import GeneralSentimentAnalyzer
 from preprocessing.baseline_preprocessor import BaselinePreprocessor
+from indexing.dense_vote_indexer import DenseVoteIndexer
 
-TEST = 0
+TEST = 20
 
 if (TEST == 0):
     # Indexing test
@@ -171,3 +172,13 @@ elif(TEST == 18):
     baseline_preprocessor = BaselinePreprocessor(verbose=True, parallel=True)
     baseline_preprocessor.process_corpus(corpus)
     corpus.write_corpus_pickle("./data/corpus.pkl")
+elif(TEST == 19):
+    index = Index(DenseVoteIndexer, index_file_path='data/dense_index')
+    hits = index.query("What is better at reducing fever in children, Ibuprofen or Aspirin?")
+elif(TEST == 20):
+    # Recall check
+    corpus = Corpus(corpus_file_path="./data/corpus.pkl")
+    index = Index(DenseVoteIndexer, corpus=corpus, index_file_path="./data/dense_index")
+    sentiment_analyzer = GeneralSentimentAnalyzer()
+    process = BatchQueryProcess(index, None)
+    process.execute("./test_data/topics_21.xml", "./test_data/run.txt", "Custom")

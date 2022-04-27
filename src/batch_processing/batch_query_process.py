@@ -38,7 +38,10 @@ class BatchQueryProcess:
 
                 # Analyze sentiments
                 queries = self.index.expand_query(query_input)
-                sentiment = self.sentiment_analyzer.analyze(queries, hit.corpus_entry.contents)
+                if self.sentiment_analyzer:
+                    sentiment = self.sentiment_analyzer.analyze(queries, hit.corpus_entry.contents)
+                else:
+                    sentiment = "Q0"
 
                 # Create and add result to results
                 result = Result(topic.number, sentiment, hit.id,

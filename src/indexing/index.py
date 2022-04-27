@@ -1,6 +1,4 @@
 from typing import Union
-import pyterrier as pt
-
 import constants
 from corpus.corpus import Corpus
 from indexing.hit import Hit
@@ -22,9 +20,6 @@ class Index:
     def __init__(self, indexer, corpus: Union[Corpus, None] = None, preprocessor: Preprocessor = None,
                  query_expander: QueryExpander = None, reranker: Reranker = None,
                  index_file_path: str = constants.INDEX_FILE_LOCATION):
-        # Initialize python terrier
-        if not pt.started():
-            pt.init(version = 5.5, helper_version = "0.0.6")
 
         self.corpus = corpus
         self.index_file_path = index_file_path

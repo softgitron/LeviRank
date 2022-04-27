@@ -1,7 +1,6 @@
 #!/bin/python3
 import os
 import nltk
-import pyterrier as pt
 import gensim.downloader as gensim_api
 from language_tool_python import LanguageTool
 from sentence_transformers import SentenceTransformer, util
@@ -19,7 +18,17 @@ os.system("python -m spacy download en_core_web_sm")
 
 gensim_api.load("glove-wiki-gigaword-300")
 LanguageTool('en-US')
-if not pt.started():
-    pt.init(version = 5.5, helper_version = "0.0.6")
+try:
+    import pyterrier as pt
+    if not pt.started():
+        pt.init(version = 5.5, helper_version = "0.0.6")
+except:
+    print("PYTHON-TERRIER NOT SUPPORTED IN THIS BUILD")
 SentenceTransformer(
     'sentence-transformers/msmarco-distilbert-base-tas-b')
+
+try:
+    from pyserini.search.faiss import FaissSearcher, TctColBertQueryEncoder
+    TctColBertQueryEncoder('castorini/tct_colbert-msmarco')
+except:
+    print("PYSERINI NOT SUPPORTED IN THIS BUILD")

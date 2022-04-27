@@ -1,5 +1,5 @@
 DEBUG = False
-METHOD_NAME = "levirank_baseline"
+METHOD_NAME = "levirank_dense_vote_initial_retrieval"
 INPUT_FILE_NAME = "topics.xml"
 OUTPUT_FILE_NAME = "run.txt"
 TEST_TITLES_FILE_LOCATION = "./data/topics.xml"
