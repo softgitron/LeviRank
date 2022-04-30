@@ -8,7 +8,6 @@ import string
 import spacy
 import gensim.downloader as api
 from spacy.lang.en.stop_words import STOP_WORDS
-from pyserini.search.faiss import FaissSearcher, TctColBertQueryEncoder
 import constants
 from indexing.hit import Hit
 from corpus.corpus import Corpus
@@ -20,6 +19,11 @@ class DenseVoteIndexer:
     searcher = None
 
     def __init__(self, corpus: Corpus, index_file_path: str):
+        try:
+            from pyserini.search.faiss import FaissSearcher, TctColBertQueryEncoder
+        except:
+            print("PYSERINI NOT SUPPORTED IN THIS BUILD")
+
         self.index_file_path = index_file_path
         self.sp = spacy.load("en_core_web_sm")
         self.model_glove = api.load("glove-wiki-gigaword-300")

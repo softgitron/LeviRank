@@ -7,6 +7,7 @@ import constants
 from corpus.corpus import Corpus
 from indexing.bm25_indexer import BM25Indexer
 from indexing.dense_vote_indexer import DenseVoteIndexer
+from indexing.dense_indexer import DenseIndexer
 from indexing.index import Index
 from preprocessing.general_preprocessor import GeneralPreprocessor
 from preprocessing.preprocessor import Preprocessor
@@ -58,7 +59,6 @@ class Main:
         corpus = Corpus()
         sentiment_analyzer = GeneralSentimentAnalyzer()
         if constants.METHOD_NAME == "BM25":
-            mono_t5_reranker = MonoT5Reranker()
             index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),)
             process = BatchQueryProcess(index, sentiment_analyzer)
             process.execute(input_path, output_path, constants.METHOD_NAME)
@@ -67,14 +67,6 @@ class Main:
             mono_t5_reranker = MonoT5Reranker()
             index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),
                         reranker=mono_t5_reranker)
-            process = BatchQueryProcess(index, sentiment_analyzer)
-            process.execute(input_path, output_path, constants.METHOD_NAME)
-        elif constants.METHOD_NAME == "BM25_with_duo_t5":
-            duo_t5_reranker = DuoT5Reranker()
-            distilbert_reranker = DistilbertReranker()
-            multi_reranker = MultiReranker([duo_t5_reranker, distilbert_reranker])
-            index = Index(BM25Indexer, corpus=corpus, preprocessor=GeneralPreprocessor(),
-                        reranker=multi_reranker)
             process = BatchQueryProcess(index, sentiment_analyzer)
             process.execute(input_path, output_path, constants.METHOD_NAME)
         elif constants.METHOD_NAME == "BM25_with_duo_t5_and_advanced_expander":
@@ -87,7 +79,7 @@ class Main:
                         reranker=multi_reranker)
             process = BatchQueryProcess(index, sentiment_analyzer)
             process.execute(input_path, output_path, constants.METHOD_NAME)
-        elif constants.METHOD_NAME == "levirank_baseline":
+        elif constants.METHOD_NAME == "levirank_baseline_large_duo_t5":
             mono_t5_reranker = MonoT5Reranker()
             duo_t5_reranker = DuoT5Reranker()
             multi_reranker = MultiReranker([mono_t5_reranker, duo_t5_reranker])
@@ -101,6 +93,13 @@ class Main:
             duo_t5_reranker = DuoT5Reranker()
             multi_reranker = MultiReranker([mono_t5_reranker, duo_t5_reranker])
             index = Index(DenseVoteIndexer, corpus=corpus, reranker=multi_reranker, index_file_path="./data/dense_index")
+            process = BatchQueryProcess(index, sentiment_analyzer)
+            process.execute(input_path, output_path, constants.METHOD_NAME)
+        elif constants.METHOD_NAME == "levirank_dense_initial_retrieval":
+            mono_t5_reranker = MonoT5Reranker()
+            duo_t5_reranker = DuoT5Reranker()
+            multi_reranker = MultiReranker([mono_t5_reranker, duo_t5_reranker])
+            index = Index(DenseIndexer, corpus=corpus, reranker=multi_reranker, index_file_path="./data/dense_index")
             process = BatchQueryProcess(index, sentiment_analyzer)
             process.execute(input_path, output_path, constants.METHOD_NAME)
 

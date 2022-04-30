@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+# Comment out python-terrier and pytrec-eval for python-terrier supported build
 # python-terrier = "*"
 # pytrec-eval-terrier = "==0.5.2"
 language-tool-python = "*"
@@ -12,7 +13,7 @@ nptyping = "==1.4.4"
 spacy = "*"
 gensim = "*"
 tensorflow = "*"
-# Remove pyserini and faiss for python-terrier supported build
+# Comment out pyserini and faiss for python-terrier supported build
 pyserini = "*"
 faiss-gpu = "*"
 torch = "*"
