@@ -1,12 +1,4 @@
 # touche-2022
-The touche 2022.ipynb:Chat Noir,BM25,Predicting Queries from Passages,query expansion
+This is the branch for Pujit's analysis
 
-Following up From Ashish's Code I created two more notebooks following the mono duo pipeline
-
-Intial retrieval.ipynb: bm25 intial retreival (it has to be run first to create an input for reranker) 
-
-Reranker.ipynb: Reranking using Mono T5
-
-Google drive working Folder: https://drive.google.com/drive/folders/1OY85d9xLQhWl2HirGKyG1ehN3I-NYadv?usp=sharing
-
-(Note: I did the initial retrieval after preprocessing the documents. It can be done even without preprocessing)
+You can find all the input and output files here: https://drive.google.com/drive/folders/1OY85d9xLQhWl2HirGKyG1ehN3I-NYadv?usp=sharing
