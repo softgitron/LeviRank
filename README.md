@@ -1,4 +1,7 @@
 # About this repository
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 This repository contains all the necessary code for running the retrieval pipeline. However unfortunately the codebase is not fully homogenous and instead consists of multiple parts. Main runner is available in the src folder while more complex index builders and advanced methods are available in the `submission_notebooks` folder.
 
 Main program is able to do following things:
