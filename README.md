@@ -79,3 +79,17 @@ Program is separated into several modules that are visible in the src folder. Be
     - Hosts special python scripts that can't be directly run under the main environment
     - Hosts real implementation of MonoT5 and DuoT5
     - Pyserini indexer is not moved to special environments due to lack of time
+    
+### Citing our Work
+
+In case our work was helpful for you, feel free to cite this work!
+
+```
+@inproceedings{RanaEtAl:CLEF2022,
+title = {LEVIRANK: Limited Query Expansion with Voting Integration for Document Retrieval and Ranking},
+author = {Ashish Rana and Pujit Golchha and Roni Juntunen and Andreea Coajă and Ahmed Elzamarany and Chia-Chien Hung and Simone Paolo Ponzetto},
+pages = {3074--3089},
+url = {http://ceur-ws.org/Vol-3180/#paper-259},
+crossref = {CLEF2022},
+}
+```
